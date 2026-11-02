@@ -1,0 +1,77 @@
+{
+  "name": "gestao-de-frotas",
+  "productName": "Gestão de Frotas",
+  "version": "1.1.0",
+  "description": "Gestão de Frotas - controle de veículos, abastecimentos, despesas, manutenções, alertas, relatórios e rastreamento",
+  "author": "Dayane Ferreira",
+  "private": true,
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "desktop": "electron .",
+    "check": "node scripts/check.js",
+    "smoke": "node scripts/smoke.js",
+    "web": "node scripts/serve-web.js",
+    "instalador": "npm run check && electron-builder --win nsis --publish never"
+  },
+  "build": {
+    "appId": "br.com.dayaneferreira.gestaofrotas",
+    "productName": "Gestão de Frotas",
+    "copyright": "Desenvolvido por Dayane Ferreira",
+    "directories": {
+      "output": "instalador",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "!src/data/fleetData.js",
+      {
+        "from": "build/sem-dados",
+        "to": "src/data",
+        "filter": [
+          "fleetData.js"
+        ]
+      },
+      "package.json"
+    ],
+    "electronLanguages": [
+      "pt-BR",
+      "en-US"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "language": "1046",
+      "installerLanguages": [
+        "pt_BR"
+      ],
+      "multiLanguageInstaller": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Gestão de Frotas",
+      "uninstallDisplayName": "Gestão de Frotas",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "Gestao-de-Frotas-Instalador-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "44.0.0",
+    "electron-builder": "^26.15.3",
+    "qrcode-generator": "2.0.4"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.128.0",
+    "@supabase/supabase-js": "2.117.1",
+    "electron-updater": "^6.8.9"
+  }
+}

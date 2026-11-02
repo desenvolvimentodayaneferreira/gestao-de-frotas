@@ -1,0 +1,8 @@
+node_modules/
+dist-electron/
+*.log
+.env
+__pycache__/
+*.db
+*.sqlite
+instalador/

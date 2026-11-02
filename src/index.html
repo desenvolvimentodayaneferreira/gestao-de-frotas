@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#1b1a1f" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.arcgisonline.com https://*.tile.openstreetmap.org; connect-src 'self' https:; frame-src data:; object-src 'none'; base-uri 'none'" />
+    <title>Gestão de Frotas</title>
+    <link rel="icon" type="image/png" href="assets/logo.svg" />
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <section id="login-screen" class="login-screen" aria-label="Acesso ao sistema">
+      <div class="login-decoration decoration-one"></div>
+      <div class="login-decoration decoration-two"></div>
+
+      <div class="login-brand-panel">
+        <img src="assets/logo.svg" alt="Gestão de Frotas" class="login-logo" />
+        <div class="brand-copy">
+          <h1>Gestão de Frota</h1>
+        </div>
+      </div>
+
+      <div class="login-card-wrap">
+        <form id="login-form" class="login-card" autocomplete="off">
+          <div class="login-heading"><span class="status-dot"></span><span>Acesso restrito</span></div>
+          <h2>Bem-vindo(a)</h2>
+          <p class="login-subtitle">Entre com seu login e senha pessoais.</p>
+
+          <label for="username">Login</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"/></svg>
+            <input id="username" name="username" type="text" placeholder="Digite seu login" autocapitalize="off" required />
+          </div>
+
+          <label for="password">Senha</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2M5 10h14v11H5z"/></svg>
+            <input id="password" name="password" type="password" placeholder="Sua senha" required />
+            <button type="button" class="icon-button" data-toggle-password="password" aria-label="Mostrar senha">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+
+          <p id="login-error" class="login-error" role="alert"></p>
+          <button type="submit" class="primary-button login-button">Entrar no sistema</button>
+          <p class="login-help">Esqueceu a senha ou foi bloqueado? Procure a Gerência para redefinir o acesso.</p>
+        </form>
+
+        <form id="setup-form" class="login-card is-hidden" autocomplete="off">
+          <div class="login-heading"><span class="status-dot"></span><span>Primeira configuração</span></div>
+          <h2>Criar administrador</h2>
+          <p class="login-subtitle">Este é o primeiro acesso. Crie o usuário administrador; os demais usuários são cadastrados depois, dentro do sistema.</p>
+          <label for="setup-name">Nome completo</label>
+          <div class="input-wrap"><input id="setup-name" type="text" required /></div>
+          <label for="setup-username">Login</label>
+          <div class="input-wrap"><input id="setup-username" type="text" placeholder="ex.: admin" autocapitalize="off" required /></div>
+          <label for="setup-password">Senha</label>
+          <div class="input-wrap">
+            <input id="setup-password" type="password" placeholder="Mínimo 8 caracteres, letras e números" required />
+            <button type="button" class="icon-button" data-toggle-password="setup-password" aria-label="Mostrar senha">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <label for="setup-password-confirm">Repita a senha</label>
+          <div class="input-wrap"><input id="setup-password-confirm" type="password" required /></div>
+          <p id="setup-error" class="login-error" role="alert"></p>
+          <button type="submit" class="primary-button login-button">Criar e entrar</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="app-shell" class="app-shell is-hidden" aria-label="Gestão de Frotas">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <img src="assets/logo.svg" alt="Gestão de Frotas" />
+          <div>
+            <strong>Gestão de Frotas</strong>
+            <span>Minha Empresa</span>
+          </div>
+        </div>
+
+        <nav id="main-nav" class="main-nav" aria-label="Navegação principal">
+          <span class="nav-section-label">Visão geral</span>
+          <button class="nav-item active" data-view="dashboard">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Painel principal
+          </button>
+          <button class="nav-item" data-view="gps">
+            <svg viewBox="0 0 24 24"><path d="M12 21s6-5.4 6-12a6 6 0 1 0-12 0c0 6.6 6 12 6 12Z"/><circle cx="12" cy="9" r="2.2"/></svg>
+            Visão GPS
+          </button>
+          <button class="nav-item" data-view="alertas">
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+            Alertas
+            <span id="alert-count-nav" class="nav-badge is-hidden"></span>
+          </button>
+
+          <span class="nav-section-label">Operação</span>
+          <button class="nav-item" data-view="veiculos">
+            <svg viewBox="0 0 24 24"><path d="M5 17h14l-1.5-6h-11zM7 17v2M17 17v2M8 8h8l1.5 3h-11z"/><circle cx="7" cy="17" r="1"/><circle cx="17" cy="17" r="1"/></svg>
+            Veículos
+          </button>
+          <button class="nav-item" data-view="motoristas">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            Motoristas
+          </button>
+          <button class="nav-item" data-view="abastecimentos">
+            <svg viewBox="0 0 24 24"><path d="M5 21V4h10v17M3 21h14M7 7h6v5H7zM15 8h2l2 2v7a2 2 0 0 0 2 2"/></svg>
+            Abastecimentos
+          </button>
+          <button class="nav-item" data-view="despesas">
+            <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16M8 15h3"/></svg>
+            Despesas
+          </button>
+          <button class="nav-item" data-view="notas">
+            <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3ZM9 8h6M9 12h6M9 16h3"/></svg>
+            Notas do celular
+            <span id="inbox-count" class="nav-badge is-hidden"></span>
+          </button>
+          <button class="nav-item" data-view="manutencoes">
+            <svg viewBox="0 0 24 24"><path d="m14 7 3-3 3 3-3 3M4 20l8-8M5 7a3 3 0 0 0 4 4l8 8 2-2-8-8a3 3 0 0 0-4-4Z"/></svg>
+            Manutenções
+          </button>
+
+          <span class="nav-section-label">Análises</span>
+          <button class="nav-item" data-view="relatorios">
+            <svg viewBox="0 0 24 24"><path d="M5 21V10M12 21V3M19 21v-7"/></svg>
+            Relatórios
+          </button>
+          <button class="nav-item" data-view="qualidade">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>
+            Qualidade dos dados
+            <span id="issue-count" class="nav-badge is-hidden"></span>
+          </button>
+
+          <span class="nav-section-label" data-permission="backup">Administração</span>
+          <button class="nav-item" data-view="usuarios" data-permission="usuarios">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8M19 8v6M16 11h6"/></svg>
+            Usuários e acessos
+          </button>
+          <button class="nav-item" data-view="configuracoes" data-permission="backup">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg>
+            Configurações
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <span id="save-status" class="save-status">Salvo</span>
+          <small>Versão 1.0 · dados salvos neste computador</small>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div>
+            <span id="breadcrumb">Visão geral</span>
+            <h2 id="page-title">Painel principal</h2>
+          </div>
+          <div class="topbar-actions">
+            <span id="today-label" class="today-label"></span>
+            <div class="search-box">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+              <input id="global-search" type="search" placeholder="Buscar nesta tela" />
+            </div>
+            <div class="notification-wrap">
+              <button class="notification-button" aria-label="Alertas">
+                <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+                <span id="alert-count" class="is-hidden">0</span>
+              </button>
+              <div id="notification-panel" class="notification-panel is-hidden"></div>
+            </div>
+            <div class="user-menu">
+              <div id="user-avatar" class="user-avatar">?</div>
+              <div>
+                <strong id="current-user-name">Usuário</strong>
+                <span id="current-role">Perfil</span>
+              </div>
+              <button id="change-password-button" class="logout-button" title="Alterar minha senha">Senha</button>
+              <button id="logout-button" class="logout-button" title="Sair">Sair</button>
+            </div>
+          </div>
+        </header>
+
+        <div id="content-area" class="content-area"></div>
+      </main>
+    </section>
+
+    <dialog id="form-dialog" class="app-dialog"></dialog>
+    <dialog id="confirm-dialog" class="app-dialog confirm"></dialog>
+    <div id="toast" class="toast" role="status"></div>
+
+    <script src="vendor/chart.umd.js"></script>
+    <script src="vendor/leaflet/leaflet.js"></script>
+    <script src="data/fleetData.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/views-common.js"></script>
+    <script src="js/views-dashboard.js"></script>
+    <script src="js/views-operacao.js"></script>
+    <script src="vendor/qrcode.js"></script>
+    <script src="js/notas.js"></script>
+    <script src="js/views-analise.js"></script>
+    <script src="js/gps.js"></script>
+    <script src="js/views-admin.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

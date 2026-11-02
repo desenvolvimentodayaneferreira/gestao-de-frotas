@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#121114" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Notas da Frota" />
+    <title>Notas da Frota</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="icone-192.png" />
+    <link rel="apple-touch-icon" href="icone-192.png" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <header class="top">
+      <img src="logo.svg" alt="Gestão de Frotas" class="top-logo" />
+      <div class="top-title"><strong>Notas da frota</strong><small id="who"></small></div>
+      <button id="logout" class="link is-hidden" type="button">Sair</button>
+    </header>
+
+    <main>
+      <!-- Sem configuração: precisa abrir pelo QR Code do escritório -->
+      <section id="screen-setup" class="screen is-hidden">
+        <div class="card center">
+          <h1>Abra pelo QR Code</h1>
+          <p>Peça ao escritório para mostrar o QR Code do aplicativo (Configurações → Notas pelo celular) e aponte a câmera do celular para ele.</p>
+        </div>
+      </section>
+
+      <!-- Login -->
+      <section id="screen-login" class="screen is-hidden">
+        <form id="login-form" class="card" autocomplete="on">
+          <h1>Entrar</h1>
+          <label>Usuário<input name="user" autocapitalize="off" autocomplete="username" required placeholder="ex.: joao" /></label>
+          <label>Senha<input name="password" type="password" autocomplete="current-password" required /></label>
+          <p class="error" role="alert"></p>
+          <button class="primary" type="submit">Entrar</button>
+        </form>
+      </section>
+
+      <!-- Início: câmera -->
+      <section id="screen-home" class="screen is-hidden">
+        <label class="camera-button">
+          <span class="camera-icon">📷</span>
+          <strong>Fotografar nota</strong>
+          <small>Posto, oficina, peças, borracharia ou recibo</small>
+          <input id="camera-input" type="file" accept="image/*" capture="environment" hidden />
+        </label>
+        <label class="gallery-button">Escolher foto da galeria<input id="gallery-input" type="file" accept="image/*" hidden /></label>
+
+        <div class="card">
+          <div class="card-head"><h2>Minhas notas</h2><button id="reload-list" class="link" type="button">Atualizar</button></div>
+          <ul id="my-notes" class="notes"></ul>
+        </div>
+      </section>
+
+      <!-- Dados da nota -->
+      <section id="screen-send" class="screen is-hidden">
+        <form id="send-form" class="card">
+          <img id="preview" alt="Foto da nota" class="preview" />
+          <p class="hint">A foto está legível? Valores e data precisam aparecer nítidos. Se não, toque em "Tirar outra".</p>
+          <div class="segmented" role="radiogroup" aria-label="Tipo da nota">
+            <label><input type="radio" name="tipo" value="abastecimento" checked /><span>⛽ Abastecimento</span></label>
+            <label><input type="radio" name="tipo" value="despesa" /><span>🧾 Outra despesa</span></label>
+          </div>
+          <label>Veículo<select name="veiculo" required><option value="">Selecione o veículo</option></select></label>
+          <label id="km-field">Km no painel<input name="km" type="number" inputmode="numeric" min="0" placeholder="Ex.: 58420" /></label>
+          <label>Observação (opcional)<textarea name="obs" rows="2" placeholder="Ex.: troca de óleo, pneu furado…"></textarea></label>
+          <p class="error" role="alert"></p>
+          <button class="primary" type="submit">Enviar nota</button>
+          <button class="secondary" type="button" id="retake">Tirar outra</button>
+          <button class="link" type="button" id="cancel-send">Cancelar</button>
+        </form>
+      </section>
+
+      <!-- Enviando / enviado -->
+      <section id="screen-done" class="screen is-hidden">
+        <div class="card center">
+          <div id="done-icon" class="done-icon">⏳</div>
+          <h1 id="done-title">Enviando…</h1>
+          <p id="done-text">Não feche o aplicativo.</p>
+          <button id="done-ok" class="primary is-hidden" type="button">Fotografar outra nota</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="vendor/supabase.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
